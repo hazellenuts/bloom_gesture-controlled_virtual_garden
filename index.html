@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloom — Hazellenuts</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Bloom🌷</h1>
+        <p>A gesture-controlled virtual garden</p>
+        <span class="credit">by Hazellenuts</span>
+    </header>
+
+    <main id="garden"></main>
+
+    <div id="cursor"></div>
+
+    <div id="camera-container">
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="hand-canvas"></canvas>
+    </div>
+
+    <footer>
+        <p id="status">Your little garden awaits.</p>
+
+        <select id="camera-select" hidden></select>
+
+        <button id="start">Enter the garden</button>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+
+</body>
+</html>
