@@ -185,7 +185,7 @@ export function triggerButterflies() {
             speed: random(5, 9),
 
             curve: random(25, 75),
-            orbitRadius: random(25, 50),
+            orbitRadius: random(60, 100),
 
             colors: pick(butterflyPalettes),
 
