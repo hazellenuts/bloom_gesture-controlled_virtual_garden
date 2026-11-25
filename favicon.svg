@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 64 64">
+
+    <!-- Background -->
+    <rect width="64" height="64"
+          rx="15" fill="#14251b"/>
+
+    <!-- Stem -->
+    <path d="M32 51 Q35 40 32 28"
+          fill="none"
+          stroke="#91b17c"
+          stroke-width="3.4"
+          stroke-linecap="round"/>
+
+    <!-- Leaves -->
+    <path d="M32 47 Q15 47 15 33 Q30 34 32 47"
+          fill="#759c68"/>
+
+    <path d="M33 43 Q34 30 49 31 Q48 43 33 43"
+          fill="#a0ba86"/>
+
+    <!-- Outer petals -->
+    <path d="M32 32
+             C17 32 14 19 18 12
+             Q27 13 32 23
+             Q38 13 46 12
+             C49 23 44 32 32 32"
+          fill="#d89aaf"/>
+
+    <!-- Center petal -->
+    <path d="M32 32
+             C21 25 25 15 32 8
+             C40 17 43 26 32 32"
+          fill="#f1bfd0"/>
+
+    <!-- Golden sparkle -->
+    <path d="M51 8
+             Q52 13 57 14
+             Q52 15 51 20
+             Q50 15 45 14
+             Q50 13 51 8"
+          fill="#edda9f"/>
+
+    <!-- Fairy dust -->
+    <circle cx="11" cy="26" r="1.6"
+            fill="#edda9f"/>
+
+    <circle cx="48" cy="49" r="1.2"
+            fill="#edda9f"/>
+
+</svg>
