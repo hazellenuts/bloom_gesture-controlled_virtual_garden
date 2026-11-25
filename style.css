@@ -286,3 +286,354 @@ button:hover {
         filter: brightness(1);
     }
 }
+
+#effects-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* ========================================
+   ENCHANTED GARDEN ENTRANCE
+======================================== */
+
+#start.garden-entrance {
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 10;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    isolation: isolate;
+
+    width: min(280px, 65vw, 42vh);
+
+    padding: 0;
+    border: none;
+    border-radius: 0;
+
+    background: transparent;
+
+    color: #dcd7bf;
+
+    box-shadow: none;
+
+    cursor: pointer;
+    overflow: visible;
+}
+
+#start.garden-entrance:hover {
+    background: transparent;
+
+    transform: translate(-50%, -50%);
+
+    box-shadow: none;
+}
+
+#start.garden-entrance:focus-visible {
+    outline: 1px dashed #b2a885;
+    outline-offset: 12px;
+}
+
+
+/* ========================================
+   GARDEN GATE
+======================================== */
+
+.garden-gate {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    height: auto;
+
+    overflow: visible;
+
+    filter: drop-shadow(
+        0 0 15px rgba(173, 192, 132, 0.08)
+    );
+
+    transition: filter 3s ease-in-out;
+}
+
+.garden-entrance:is(:hover, :focus-visible, :disabled)
+.garden-gate {
+    filter: drop-shadow(
+        0 0 20px rgba(241, 218, 160, 0.16)
+    );
+}
+
+
+/* ========================================
+   SLOW GATE OPENING
+======================================== */
+
+.gate-door {
+    transform-box: fill-box;
+
+    transform: scaleX(1);
+    opacity: 1;
+
+    transition:
+        transform 9s ease-in-out,
+        opacity 10s ease-in-out;
+
+    transition-delay: 0.3s;
+}
+
+.gate-left {
+    transform-origin: left center;
+}
+
+.gate-right {
+    transform-origin: right center;
+}
+
+.garden-entrance:is(:hover, :focus-visible, :disabled)
+.gate-left {
+    transform: scaleX(0.15);
+    opacity: 0.1;
+}
+
+.garden-entrance:is(:hover, :focus-visible, :disabled)
+.gate-right {
+    transform: scaleX(0.15);
+    opacity: 0.1;
+}
+
+
+/* ========================================
+   ENTRANCE LABEL
+======================================== */
+
+.entrance-label {
+    position: relative;
+    z-index: 2;
+
+    margin-top: 16px;
+
+    font-family: Georgia, serif;
+
+    font-size: 11px;
+    font-weight: 400;
+
+    letter-spacing: 3px;
+
+    opacity: 0.55;
+
+    transition:
+        opacity 2.5s ease,
+        text-shadow 3s ease;
+}
+
+.garden-entrance:is(:hover, :focus-visible, :disabled)
+.entrance-label {
+    opacity: 0.9;
+
+    text-shadow:
+        0 0 12px rgba(244, 224, 173, 0.35);
+}
+
+
+/* ========================================
+   SOFT GOLDEN LIGHT
+======================================== */
+
+/* ========================================
+   SOFT GOLDEN LIGHT
+======================================== */
+
+.entrance-glow {
+    position: absolute;
+    z-index: 0;
+
+    left: 50%;
+    top: 50%;
+
+    width: 160vw;
+    height: 160vh;
+
+    transform: translate(-50%, -50%);
+
+    background:
+
+        radial-gradient(
+            ellipse at 50% 82%,
+            rgba(241, 215, 153, 0.09),
+            rgba(241, 215, 153, 0.035) 35%,
+            transparent 70%
+        ),
+
+        radial-gradient(
+            ellipse at 50% 65%,
+            rgba(215, 190, 125, 0.04),
+            transparent 55%
+        );
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: opacity 6s ease-in-out;
+}
+
+.garden-entrance:is(:hover, :focus-visible, :disabled)
+.entrance-glow {
+    opacity: 1;
+}
+
+
+/* ========================================
+   MAGICAL FLOATING PARTICLES
+======================================== */
+
+.entrance-dust {
+    position: absolute;
+
+    z-index: 1;
+
+    top: 45%;
+    left: 50%;
+
+    width: 0;
+    height: 0;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: opacity 3s ease-in-out;
+}
+
+.garden-entrance:is(:hover, :focus-visible, :disabled)
+.entrance-dust {
+    opacity: 1;
+}
+
+.entrance-dust i {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: var(--size);
+    height: var(--size);
+
+    border-radius: 50%;
+
+    background: var(--color);
+
+    box-shadow:
+        0 0 5px var(--color),
+        0 0 12px var(--color);
+
+    opacity: 0;
+
+    animation: fairy-drift
+        var(--duration)
+        var(--delay)
+        infinite
+        ease-in-out;
+
+    animation-play-state: paused;
+}
+
+.garden-entrance:is(:hover, :focus-visible, :disabled)
+.entrance-dust i {
+    animation-play-state: running;
+}
+@keyframes fairy-drift {
+
+    0% {
+        opacity: 0;
+
+        transform: translate(
+            var(--start-x),
+            var(--start-y)
+        ) scale(0.4);
+    }
+
+    25% {
+        opacity: 0.85;
+    }
+
+    50% {
+        opacity: 0.65;
+    }
+
+    75% {
+        opacity: 0.35;
+    }
+
+    100% {
+        opacity: 0;
+
+        transform: translate(
+            var(--end-x),
+            var(--end-y)
+        ) scale(0.8);
+    }
+}
+
+
+/* ========================================
+   SUBTLE IVY MOVEMENT
+======================================== */
+
+.gate-ivy {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+
+    animation: ivy-sway 8s ease-in-out infinite;
+}
+
+@keyframes ivy-sway {
+
+    0%, 100% {
+        transform: rotate(-0.3deg);
+    }
+
+    50% {
+        transform: rotate(0.3deg);
+    }
+}
+
+
+/* ========================================
+   REDUCED MOTION
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .gate-door,
+    .entrance-glow,
+    .entrance-dust,
+    .entrance-label,
+    .garden-gate {
+        transition: none;
+    }
+
+    .gate-ivy,
+    .entrance-dust i {
+        animation: none;
+    }
+
+    .entrance-dust i {
+        opacity: 0.5;
+
+        transform: translate(
+            var(--end-x),
+            var(--end-y)
+        );
+    }
+}

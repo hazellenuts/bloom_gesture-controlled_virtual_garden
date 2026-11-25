@@ -1,5 +1,10 @@
 import { growFlower } from "./flowers.js";
-import { growGrass, startRain, isRaining } from "./garden-effects.js";
+import {
+    growGrass,
+    startRain,
+    isRaining,
+    triggerButterflies
+} from "./garden-effects.js";
 const seeds = [];
 const garden = document.getElementById("garden");
 const PINCH_THRESHOLD = 0.35;
@@ -34,6 +39,16 @@ function getDistance(a, b) {
 const GRASS_RADIUS = 110;
 const GRASS_HOLD_MS = 450;
 const HEART_HOLD_MS = 350;
+
+const PEACE_HOLD_MS = 100;
+const PEACE_RELEASE_MS = 200;
+const BUTTERFLY_COOLDOWN = 1800;
+
+let peaceSince = null;
+let peaceAbsentSince = null;
+let peaceLocked = false;
+let lastButterflyTime = -Infinity;
+
 const SWAP_HANDS = false; // Change to true only if camera labels are reversed.
 let grassTarget = null;
 let grassSince = null;
@@ -48,6 +63,8 @@ function resetGrassGesture() {
 }
 function resetGardenGestures() {
     resetGrassGesture();
+    resetPeaceGesture();
+
     heartSince = null;
     heartLocked = false;
     heartAbsentSince = null;
@@ -165,6 +182,114 @@ function plantSeed(x, y) {
         y: normalizedY
     });
 }
+
+function isPeaceSign(hand) {
+
+    if (!hand) return false;
+
+    const wrist = hand[0];
+
+    const palmSize = getDistance(
+        wrist,
+        hand[9]
+    );
+
+    if (palmSize < 1) return false;
+
+    function fingerRatio(tip, pip) {
+
+        const tipDistance = getDistance(
+            hand[tip], wrist
+        );
+
+        const pipDistance = getDistance(
+            hand[pip], wrist
+        );
+
+        return tipDistance /
+            Math.max(pipDistance, 1);
+    }
+
+    const indexExtended =
+        fingerRatio(8, 6) > 1.18;
+
+    const middleExtended =
+        fingerRatio(12, 10) > 1.18;
+
+    const ringFolded =
+        fingerRatio(16, 14) < 1.10;
+
+    const pinkyFolded =
+        fingerRatio(20, 18) < 1.10;
+
+    const fingersSeparated =
+        getDistance(hand[8], hand[12]) /
+        palmSize > 0.35;
+
+    return (
+        indexExtended &&
+        middleExtended &&
+        ringFolded &&
+        pinkyFolded &&
+        fingersSeparated
+    );
+}
+
+function resetPeaceGesture() {
+
+    peaceSince = null;
+    peaceAbsentSince = null;
+    peaceLocked = false;
+}
+
+
+function detectPeace(right, x, y, now) {
+
+    if (!isPeaceSign(right)) {
+
+        peaceSince = null;
+
+        if (peaceLocked) {
+
+            if (peaceAbsentSince === null) {
+                peaceAbsentSince = now;
+            }
+
+            if (
+                now - peaceAbsentSince >=
+                PEACE_RELEASE_MS
+            ) {
+                peaceLocked = false;
+            }
+        }
+
+        return false;
+    }
+
+    peaceAbsentSince = null;
+
+    if (peaceSince === null) {
+        peaceSince = now;
+    }
+
+    if (
+        !peaceLocked &&
+        now - peaceSince >= PEACE_HOLD_MS &&
+        now - lastButterflyTime >= BUTTERFLY_COOLDOWN
+    ) {
+
+        triggerButterflies();
+
+        peaceLocked = true;
+        lastButterflyTime = now;
+    }
+
+    status.textContent = peaceLocked
+        ? "The garden welcomes its little visitors."
+        : "Calling the little butterflies...";
+    return true;
+}
+
 function detectPinch(hand, x, y) {
     const thumbTip = hand[4];
     const indexTip = hand[8];
@@ -304,41 +429,127 @@ async function startCamera() {
     }
 }
 function trackHands() {
+
     requestAnimationFrame(trackHands);
-    if (cameraSwitching || !currentStream || video.readyState < 2 || video.currentTime === lastVideoTime) return;
+
+    if (
+        cameraSwitching ||
+        !currentStream ||
+        video.readyState < 2 ||
+        video.currentTime === lastVideoTime
+    ) return;
+
     lastVideoTime = video.currentTime;
+
     const now = performance.now();
-    const results = handLandmarker.detectForVideo(video, now);
+
+    const results =
+        handLandmarker.detectForVideo(video, now);
+
     drawHands(results.landmarks);
-    let right = null, left = null;
-    const handedness = results.handednesses ?? results.handedness ?? [];
+
+    let right = null;
+    let left = null;
+
+    const handedness =
+        results.handednesses ??
+        results.handedness ??
+        [];
+
+    // Identify right and left hands
     for (let i = 0; i < results.landmarks.length; i++) {
-        const label = handedness[i]?.[0]?.categoryName;
-        if (label === (SWAP_HANDS ? 'Left' : 'Right')) right = results.landmarks[i];
-        if (label === (SWAP_HANDS ? 'Right' : 'Left')) left = results.landmarks[i];
+
+        const label =
+            handedness[i]?.[0]?.categoryName;
+
+        if (
+            label === (SWAP_HANDS ? "Left" : "Right")
+        ) {
+            right = results.landmarks[i];
+        }
+
+        if (
+            label === (SWAP_HANDS ? "Right" : "Left")
+        ) {
+            left = results.landmarks[i];
+        }
     }
+
     let x, y;
+
+    // Right-hand cursor
     if (right) {
+
         x = (1 - right[8].x) * window.innerWidth;
         y = right[8].y * window.innerHeight;
+
         cursor.style.left = `${x}px`;
         cursor.style.top = `${y}px`;
-        cursor.style.display = 'block';
+        cursor.style.display = "block";
+
     } else {
-        cursor.style.display = 'none';
+
+        cursor.style.display = "none";
+
         resetPinch();
+        resetPeaceGesture();
     }
+
+
+    // PRIORITY 1: HEART SIGN
+
     const heart = detectHeart(right, left, now);
+
     if (heart || isRaining(now)) {
+
         resetPinch();
         resetGrassGesture();
-        if (isRaining(now)) status.textContent = 'A little rain for every flower.';
+        resetPeaceGesture();
+
+        if (isRaining(now)) {
+
+            status.textContent =
+                "A little rain for every flower.";
+        }
+
         return;
     }
-    if (right) detectPinch(right, x, y);
-    else status.textContent = 'Show your right hand to plant a seed.';
-    if (right) detectGrass(left, x, y, now);
-    else resetGrassGesture();
+
+
+    // PRIORITY 2: PEACE SIGN
+
+    if (right) {
+
+        const peaceActive =
+            detectPeace(right, x, y, now);
+
+        if (peaceActive) {
+
+            resetPinch();
+
+            // The left hand can still grow grass
+            detectGrass(left, x, y, now);
+
+            return;
+        }
+
+
+        // PRIORITY 3: PINCH
+
+        detectPinch(right, x, y);
+
+
+        // LEFT HAND: GROW GRASS
+
+        detectGrass(left, x, y, now);
+
+    } else {
+
+        resetGrassGesture();
+
+        status.textContent =
+            "Show your right hand to plant a seed.";
+    }
 }
 startButton.addEventListener("click", startCamera);
 function drawHands(hands) {
@@ -393,3 +604,103 @@ cameraSelect.addEventListener("change", async () => {
         cameraSelect.disabled = false;
     }
 });
+
+// ========================================
+// ENTRANCE FAIRY DUST
+// ========================================
+
+function createEntranceParticles() {
+
+    const container =
+        document.querySelector(".entrance-dust");
+
+    if (!container) return;
+
+    container.replaceChildren();
+
+    const colors = [
+        "#e8d7a6",
+        "#e9cfa0",
+        "#f4e5bf",
+        "#c9d3a5",
+        "#eedcc7"
+    ];
+
+    const particleCount = 45;
+
+    for (let i = 0; i < particleCount; i++) {
+
+        const particle =
+            document.createElement("i");
+
+        const angle =
+            Math.random() * Math.PI * 2;
+
+        const distance =
+            70 + Math.random() * 250;
+
+        const startDistance =
+            Math.random() * 35;
+
+        const startX =
+            Math.cos(angle) * startDistance;
+
+        const startY =
+            Math.sin(angle) * startDistance;
+
+        const endX =
+            Math.cos(angle) * distance;
+
+        const endY =
+            Math.sin(angle) * distance;
+
+        const size =
+            2 + Math.random() * 3;
+
+        const duration =
+            6 + Math.random() * 7;
+
+        const delay =
+            -Math.random() * duration;
+
+        const color = colors[
+            Math.floor(Math.random() * colors.length)
+        ];
+
+        particle.style.setProperty(
+            "--start-x", `${startX}px`
+        );
+
+        particle.style.setProperty(
+            "--start-y", `${startY}px`
+        );
+
+        particle.style.setProperty(
+            "--end-x", `${endX}px`
+        );
+
+        particle.style.setProperty(
+            "--end-y", `${endY}px`
+        );
+
+        particle.style.setProperty(
+            "--size", `${size}px`
+        );
+
+        particle.style.setProperty(
+            "--duration", `${duration}s`
+        );
+
+        particle.style.setProperty(
+            "--delay", `${delay}s`
+        );
+
+        particle.style.setProperty(
+            "--color", color
+        );
+
+        container.appendChild(particle);
+    }
+}
+
+createEntranceParticles();

@@ -373,6 +373,34 @@ export function growFlower(x, y, delay = 0) {
 }
 
 
+export function getFlowerTargets() {
+
+    const now = performance.now();
+    const targets = [];
+    const position = new THREE.Vector3();
+
+    for (const flower of flowers) {
+
+        // Only visit fully bloomed flowers
+        if (now - flower.birth < 2500) continue;
+
+        flower.head.getWorldPosition(position);
+
+        const x = position.x / window.innerWidth;
+        const y = 1 - position.y / window.innerHeight;
+
+        // Only visit flowers inside the screen
+        if (x < 0 || x > 1 || y < 0 || y > 1) {
+            continue;
+        }
+
+        targets.push({ x, y });
+    }
+
+    return targets;
+}
+
+
 // ========================================
 // GROWTH ANIMATION
 // ========================================

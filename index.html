@@ -16,6 +16,233 @@
     </header>
 
     <main id="garden"></main>
+    <button id="start" class="garden-entrance"
+        aria-label="Enter the garden">
+
+            <!-- Golden light -->
+            <span class="entrance-glow"></span>
+
+            <!-- Floating fairy dust -->
+            <span class="entrance-dust" aria-hidden="true"></span>
+
+            <!-- Garden gate illustration -->
+            <svg class="garden-gate"
+                viewBox="0 0 240 260"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true">
+
+                <defs>
+
+                    <!-- Antique metal gradient -->
+                    <linearGradient id="gate-metal"
+                                    x1="0" y1="0"
+                                    x2="1" y2="1">
+                        <stop offset="0%" stop-color="#ddd2a5"/>
+                        <stop offset="50%" stop-color="#8e9675"/>
+                        <stop offset="100%" stop-color="#485e48"/>
+                    </linearGradient>
+
+                    <!-- Leaf gradient -->
+                    <linearGradient id="ivy-green">
+                        <stop offset="0%" stop-color="#a8bc83"/>
+                        <stop offset="100%" stop-color="#456b45"/>
+                    </linearGradient>
+
+                    <!-- Reusable ivy leaf -->
+                    <g id="ivy-leaf">
+                        <path d="M0 0 Q-12 -17 0 -23
+                                Q15 -14 0 0 Z"
+                            fill="url(#ivy-green)"/>
+
+                        <path d="M0 -2 V-18"
+                            stroke="#d2deb0"
+                            stroke-width="0.6"
+                            opacity="0.5"/>
+                    </g>
+
+                    <!-- Reusable little flower -->
+                    <g id="ivy-flower" fill="#efc1d2">
+                        <circle cx="0" cy="-4" r="4"/>
+                        <circle cx="4" cy="-1" r="4"/>
+                        <circle cx="2.5" cy="4" r="4"/>
+                        <circle cx="-2.5" cy="4" r="4"/>
+                        <circle cx="-4" cy="-1" r="4"/>
+                        <circle r="2.8" fill="#f3d895"/>
+                    </g>
+
+                    <!-- Climbing ivy -->
+                    <g id="ivy-vine">
+
+                        <path d="M0 0
+                                C25 -30 -15 -50 5 -80
+                                S-10 -125 10 -155
+                                S15 -190 48 -200"
+                            fill="none"
+                            stroke="#78966a"
+                            stroke-width="2.5"/>
+
+                        <use href="#ivy-leaf"
+                            transform="translate(4 -15) rotate(-50)"/>
+
+                        <use href="#ivy-leaf"
+                            transform="translate(9 -35) rotate(60)"/>
+
+                        <use href="#ivy-leaf"
+                            transform="translate(0 -53) rotate(-65)"/>
+
+                        <use href="#ivy-leaf"
+                            transform="translate(5 -76) rotate(45)"/>
+
+                        <use href="#ivy-leaf"
+                            transform="translate(2 -95) rotate(-60)"/>
+
+                        <use href="#ivy-leaf"
+                            transform="translate(8 -116) rotate(55)"/>
+
+                        <use href="#ivy-leaf"
+                            transform="translate(5 -139) rotate(-55)"/>
+
+                        <use href="#ivy-leaf"
+                            transform="translate(15 -159) rotate(65)"/>
+
+                        <use href="#ivy-leaf"
+                            transform="translate(25 -182) rotate(-40)"/>
+
+                        <use href="#ivy-leaf"
+                            transform="translate(44 -198) rotate(60)"/>
+
+                        <use href="#ivy-flower"
+                            transform="translate(5 -45)"/>
+
+                        <use href="#ivy-flower"
+                            transform="translate(5 -110) scale(0.8)"/>
+
+                        <use href="#ivy-flower"
+                            transform="translate(30 -185)"/>
+
+                    </g>
+
+                </defs>
+
+                <!-- Outer arch -->
+                <g fill="none"
+                stroke="url(#gate-metal)"
+                stroke-linecap="round">
+
+                    <path d="M28 235 V116
+                            A92 92 0 0 1 212 116
+                            V235"
+                        stroke-width="5"/>
+
+                    <path d="M37 235 V116
+                            A83 83 0 0 1 203 116
+                            V235"
+                        stroke-width="1.5"/>
+
+                </g>
+
+                <!-- Left door -->
+                <g class="gate-door gate-left"
+                fill="none"
+                stroke="url(#gate-metal)"
+                stroke-width="2.3">
+
+                    <path d="M37 232 V116
+                            A83 83 0 0 1 120 33
+                            V232 Z"/>
+
+                    <!-- Vertical bars -->
+                    <path d="M54 232 V68
+                            M70 232 V50
+                            M86 232 V40
+                            M102 232 V35"/>
+
+                    <!-- Decorative curves -->
+                    <path d="M37 118 Q79 82 120 118
+                            M37 190 Q79 154 120 190
+                            M37 217 H120"/>
+
+                    <path d="M48 145
+                            C80 105 103 155 77 162
+                            C56 168 59 140 74 145"/>
+
+                    <path d="M108 78
+                            C72 55 62 92 85 92
+                            Q101 89 90 76"/>
+
+                    <!-- Handle -->
+                    <circle cx="111" cy="154" r="5"
+                            stroke="#e4c88e"/>
+
+                </g>
+
+                <!-- Right door -->
+                <g class="gate-door gate-right"
+                fill="none"
+                stroke="url(#gate-metal)"
+                stroke-width="2.3">
+
+                    <g transform="translate(240 0) scale(-1 1)">
+
+                        <path d="M37 232 V116
+                                A83 83 0 0 1 120 33
+                                V232 Z"/>
+
+                        <path d="M54 232 V68
+                                M70 232 V50
+                                M86 232 V40
+                                M102 232 V35"/>
+
+                        <path d="M37 118 Q79 82 120 118
+                                M37 190 Q79 154 120 190
+                                M37 217 H120"/>
+
+                        <path d="M48 145
+                                C80 105 103 155 77 162
+                                C56 168 59 140 74 145"/>
+
+                        <path d="M108 78
+                                C72 55 62 92 85 92
+                                Q101 89 90 76"/>
+
+                        <circle cx="111" cy="154" r="5"
+                                stroke="#e4c88e"/>
+
+                    </g>
+
+                </g>
+
+                <!-- Ivy around the arch -->
+                <g class="gate-ivy">
+
+                    <use href="#ivy-vine"
+                        transform="translate(26 239)"/>
+
+                    <use href="#ivy-vine"
+                        transform="translate(214 239) scale(-1 1)"/>
+
+                </g>
+
+                <!-- Little flowers at the bottom -->
+                <use href="#ivy-flower"
+                    transform="translate(22 234) scale(1.1)"/>
+
+                <use href="#ivy-flower"
+                    transform="translate(42 241) scale(0.65)"/>
+
+                <use href="#ivy-flower"
+                    transform="translate(218 234)"/>
+
+                <use href="#ivy-flower"
+                    transform="translate(199 242) scale(0.7)"/>
+
+            </svg>
+
+            <span class="entrance-label">
+                Enter the garden
+            </span>
+
+        </button>
 
     <div id="cursor"></div>
 
@@ -29,7 +256,7 @@
 
         <select id="camera-select" hidden></select>
 
-        <button id="start">Enter the garden</button>
+        
     </footer>
 
     <script type="module" src="script.js"></script>
